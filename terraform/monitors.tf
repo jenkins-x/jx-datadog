@@ -1,4 +1,4 @@
-resource "datadog_monitor" "foo" {
+resource "datadog_monitor" "pipeline_errors" {
   name               = "pipelinerunner errors"
   type               = "log alert"
   message            = "Restart pipelinerunner pod @slack-Cloudbees-topic-jenkins-x-infra"
