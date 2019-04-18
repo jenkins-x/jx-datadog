@@ -26,3 +26,38 @@ resource "datadog_monitor" "pipeline_errors" {
 
   tags = ["infra:tekton-mole"]
 }
+
+resource "datadog_monitor" "datadog-agent-status" {
+  name               = "[cloudbees-main] Datadog agent status"
+  type               = "metric alert"
+  message            = <<EOT
+{{^is_recovery}}An agent is not reporting on this host: **{{host.name}}**. Check that everything is ok.{{/is_recovery}}
+{{#is_recovery}}Datadog agent status back to normal.{{/is_recovery}}
+@slack-notify-prod-ops
+EOT
+  query              = " avg(last_10m):avg:datadog.process.agent by {host} < 1"
+  notify_no_data     = true
+  no_data_timeframe  = 20
+  renotify_interval  = 60
+  require_full_window = true
+  notify_audit       = false
+  timeout_h          = 0
+  escalation_message = ""
+  include_tags       = false
+  new_host_delay     = 300
+  locked             = true
+  tags = ["infra:tekton-mole", "terraform:managed"]
+
+  thresholds {
+    critical = 1
+  }
+
+  # NOTE: workaround for https://github.com/terraform-providers/terraform-provider-datadog/issues/71
+  # we need to ignore changes on 'silenced', otherwise TF always found changes to apply on this property
+  lifecycle {
+    ignore_changes = [
+      "silenced"
+    ]
+  }
+}
+
