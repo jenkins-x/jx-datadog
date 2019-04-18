@@ -27,19 +27,22 @@ pipelineConfig:
                 - -k
                 - api-key
                 - -f
-                - /builder/home/datadog.key
+                - /builder/home/datadog.api.key
+
+            - image: jenkinsxio/jx:1.3.963
+              command: jx
+              args:
+                - step
+                - credential
+                - -s
+                - jenkins-x-datadog
+                - -k
+                - app-key
+                - -f
+                - /builder/home/datadog.app.key
 
             - image: gcr.io/jenkinsxio/builder-terraform:0.1.401
-              command: terraform
-              args:
-                - init
-                - terraform
-
-            - image: gcr.io/jenkinsxio/builder-terraform:0.1.401
-              command: terraform
-              args:
-                - plan
-                - -input=false
+              command: ./scripts/pr.sh
 
     release:
       pipeline:
@@ -67,16 +70,19 @@ pipelineConfig:
                 - -k
                 - api-key
                 - -f
-                - /builder/home/datadog.key
+                - /builder/home/datadog.api.key
+
+            - image: jenkinsxio/jx:1.3.963
+              command: jx
+              args:
+                - step
+                - credential
+                - -s
+                - jenkins-x-datadog
+                - -k
+                - app-key
+                - -f
+                - /builder/home/datadog.app.key
 
             - image: gcr.io/jenkinsxio/builder-terraform:0.1.401
-              command: terraform
-              args:
-                - init
-                - terraform
-
-            - image: gcr.io/jenkinsxio/builder-terraform:0.1.401
-              command: terraform
-              args:
-                - plan
-                - -input=false
+              command: ./scripts/release.sh

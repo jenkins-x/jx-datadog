@@ -1,10 +1,9 @@
-resource "datadog_monitor" "foo" {
-  name               = "Name for monitor foo"
-  type               = "metric alert"
-  message            = "Monitor triggered. Notify: @hipchat-channel"
-  escalation_message = "Escalation message @pagerduty"
+resource "datadog_monitor" "pipeline_errors" {
+  name               = "pipelinerunner errors"
+  type               = "log alert"
+  message            = "Restart pipelinerunner pod @slack-Cloudbees-topic-jenkins-x-infra"
 
-  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4"
+  query = "logs(\"service:pipelinerunner status:error\").index(\"main\").rollup(\"count\").last(\"10m\") > 3"
 
   thresholds {
     ok                = 0
@@ -25,5 +24,5 @@ resource "datadog_monitor" "foo" {
     "*" = 0
   }
 
-  tags = ["foo:bar", "baz"]
+  tags = ["infra:tekton-mole"]
 }
