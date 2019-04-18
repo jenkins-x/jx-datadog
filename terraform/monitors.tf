@@ -28,12 +28,12 @@ resource "datadog_monitor" "pipeline_errors" {
 }
 
 resource "datadog_monitor" "datadog-agent-status" {
-  name               = "[cloudbees-main] Datadog agent status"
+  name               = "Datadog agent status"
   type               = "metric alert"
   message            = <<EOT
 {{^is_recovery}}An agent is not reporting on this host: **{{host.name}}**. Check that everything is ok.{{/is_recovery}}
 {{#is_recovery}}Datadog agent status back to normal.{{/is_recovery}}
-@slack-notify-prod-ops
+@slack-Cloudbees-topic-jenkins-x-infra
 EOT
   query              = " avg(last_10m):avg:datadog.process.agent by {host} < 1"
   notify_no_data     = true
