@@ -30,16 +30,7 @@ pipelineConfig:
                 - /builder/home/datadog.key
 
             - image: gcr.io/jenkinsxio/builder-terraform:0.1.401
-              command: terraform
-              args:
-                - init
-                - terraform
-
-            - image: gcr.io/jenkinsxio/builder-terraform:0.1.401
-              command: terraform
-              args:
-                - plan
-                - -input=false
+              command: ./pr.sh
 
     release:
       pipeline:
