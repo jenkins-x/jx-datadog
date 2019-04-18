@@ -42,7 +42,7 @@ pipelineConfig:
                 - /builder/home/datadog.app.key
 
             - image: gcr.io/jenkinsxio/builder-terraform:0.1.401
-              command: ./pr.sh
+              command: ./scripts/pr.sh
 
     release:
       pipeline:
@@ -85,4 +85,4 @@ pipelineConfig:
                 - /builder/home/datadog.app.key
 
             - image: gcr.io/jenkinsxio/builder-terraform:0.1.401
-              command: ./pr.sh
+              command: ./scripts/release.sh
