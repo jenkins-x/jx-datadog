@@ -50,7 +50,7 @@ resource "datadog_monitor" "datadog-agent-status" {
 @slack-Cloudbees-topic-jenkins-x-infra
 EOT
   query              = "avg(last_10m):avg:datadog.process.agent{cluster-name:tekton-mole,cloud_provider:gcp} by {host} < 1"
-  notify_no_data     = true
+  notify_no_data     = false
   no_data_timeframe  = 20
   renotify_interval  = 60
   require_full_window = true
