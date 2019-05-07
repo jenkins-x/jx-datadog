@@ -23,6 +23,7 @@ EOT
     critical_recovery = 5
   }
 
+  no_data_timeframe = 2
   notify_no_data    = false
   renotify_interval = 60
 
