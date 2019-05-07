@@ -42,6 +42,47 @@ EOT
   }
 }
 
+resource "datadog_monitor" "pipeline_emergency" {
+  name               = "pipelinerunner emergencies"
+  type               = "log alert"
+  message            = <<EOT
+{{#is_alert}}
+Pipeline runner emergency
+  1. This should auto-recover in a few minutes
+{{/is_alert}}
+{{#is_recovery}}
+Pipeline runner - Back to normal
+{{/is_recovery}}
+@slack-Cloudbees-topic-jenkins-x-infra
+EOT
+
+  query = "logs(\"service:pipelinerunner status:emergency\").index(\"main\").rollup(\"count\").last(\"5m\") > 1"
+
+  thresholds {
+    ok                = 0
+    critical          = 1
+    critical_recovery = 0
+  }
+
+  no_data_timeframe = 2
+  notify_no_data    = false
+  renotify_interval = 60
+
+  notify_audit = false
+  timeout_h    = 60
+  include_tags = true
+
+  tags = ["infra:tekton-mole", "terraform:managed"]
+
+  # NOTE: workaround for https://github.com/terraform-providers/terraform-provider-datadog/issues/71
+  # we need to ignore changes on 'silenced', otherwise TF always found changes to apply on this property
+  lifecycle {
+    ignore_changes = [
+      "silenced"
+    ]
+  }
+}
+
 resource "datadog_monitor" "datadog-agent-status" {
   name               = "Datadog agent status"
   type               = "metric alert"
