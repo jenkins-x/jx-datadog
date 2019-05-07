@@ -3,7 +3,7 @@ resource "datadog_monitor" "pipeline_errors" {
   type               = "log alert"
   message            = <<EOT
 {{#is_alert}}
-Pipeline runner is unable to clone repositories
+Pipeline runner error rate is too high:
   1. Connect to jenkins-x-infra/tekton-mole
   2. Restart the pipelinerunner pod
 {{/is_alert}}
@@ -13,14 +13,14 @@ Pipeline runner - Back to normal
 @slack-Cloudbees-topic-jenkins-x-infra
 EOT
 
-  query = "logs(\"service:pipelinerunner status:error\").index(\"main\").rollup(\"count\").last(\"10m\") > 3"
+  query = "logs(\"service:pipelinerunner status:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 6"
 
   thresholds {
     ok                = 0
-    warning           = 2
-    warning_recovery  = 1
-    critical          = 4
-    critical_recovery = 3
+    warning           = 4
+    warning_recovery  = 3
+    critical          = 6
+    critical_recovery = 5
   }
 
   notify_no_data    = false
