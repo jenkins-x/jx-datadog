@@ -10,7 +10,7 @@ Pipeline runner error rate is too high:
 {{#is_recovery}}
 Pipeline runner - Back to normal
 {{/is_recovery}}
-@slack-Cloudbees-topic-jenkins-x-infra
+@slack-topic-jenkins-x-alert
 EOT
 
   query = "logs(\"service:pipelinerunner status:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 6"
@@ -53,7 +53,7 @@ Pipeline runner emergency
 {{#is_recovery}}
 Pipeline runner - Back to normal
 {{/is_recovery}}
-@slack-Cloudbees-topic-jenkins-x-infra
+@slack-topic-jenkins-x-alert
 EOT
 
   query = "logs(\"service:pipelinerunner status:emergency\").index(\"main\").rollup(\"count\").last(\"5m\") > 1"
@@ -89,7 +89,7 @@ resource "datadog_monitor" "datadog-agent-status" {
   message            = <<EOT
 {{^is_recovery}}An agent is not reporting on this host: **{{host.name}}**. Check that everything is ok.{{/is_recovery}}
 {{#is_recovery}}Datadog agent status back to normal.{{/is_recovery}}
-@slack-Cloudbees-topic-jenkins-x-infra
+@slack-topic-jenkins-x-alert
 EOT
   query              = "avg(last_10m):avg:datadog.process.agent{cluster-name:tekton-mole,cloud_provider:gcp} by {host} < 1"
   notify_no_data     = false
