@@ -18,9 +18,7 @@ EOT
   thresholds {
     ok                = 0
     warning           = 4
-    warning_recovery  = 3
     critical          = 6
-    critical_recovery = 5
   }
 
   no_data_timeframe = 2
@@ -61,7 +59,6 @@ EOT
   thresholds {
     ok                = 0
     critical          = 1
-    critical_recovery = 0
   }
 
   no_data_timeframe = 2
